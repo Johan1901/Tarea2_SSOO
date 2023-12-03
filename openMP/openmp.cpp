@@ -12,12 +12,16 @@ int main() {
         return -1;
     }
 
-    Mat grayImage;
-    cvtColor(image, grayImage, COLOR_BGR2GRAY); // Convertir la imagen a escala de grises
+    Mat grayImage(image.rows, image.cols, CV_8UC1); // Crear una imagen en escala de grises
 
-    // Obtener el número de filas y columnas de la imagen
-    int rows = grayImage.rows;
-    int cols = grayImage.cols;
+    // Convertir la imagen a escala de grises en paralelo utilizando OpenMP
+    #pragma omp parallel for
+    for (int i = 0; i < image.rows; ++i) {
+        for (int j = 0; j < image.cols; ++j) {
+            Vec3b pixel = image.at<Vec3b>(i, j);
+            grayImage.at<uchar>(i, j) = static_cast<uchar>((pixel[0] + pixel[1] + pixel[2]) / 3);
+        }
+    }
 
     namedWindow("Imagen en escala de grises", WINDOW_AUTOSIZE); // Crear una ventana para mostrar la imagen
     imshow("Imagen en escala de grises", grayImage); // Mostrar la imagen
@@ -26,4 +30,5 @@ int main() {
 
     return 0;
 }
+
 
