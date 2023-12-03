@@ -1,10 +1,15 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <chrono>
+#include <iomanip>
 
 using namespace cv;
 using namespace std;
 
 int main() {
+    // Capturar el tiempo de inicio
+    auto start_time = chrono::high_resolution_clock::now();
+
     Mat image = imread("../images/bosque.jpg", IMREAD_COLOR); // Leer la imagen
 
     if (image.empty()) {
@@ -23,6 +28,11 @@ int main() {
         }
     }
 
+    // Mostrar el tiempo de compilación en segundos con precisión de hasta 6 decimales
+    auto end_time = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count() / 1e6;
+    cout << fixed << setprecision(6) << "Tiempo de compilación: " << duration << " segundos" << endl;
+
     namedWindow("Imagen en escala de grises", WINDOW_AUTOSIZE); // Crear una ventana para mostrar la imagen
     imshow("Imagen en escala de grises", grayImage); // Mostrar la imagen
 
@@ -30,5 +40,3 @@ int main() {
 
     return 0;
 }
-
-
